@@ -35,6 +35,8 @@
   .steps button{appearance:none;min-width:44px;height:42px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;font-weight:700;cursor:pointer}
   .steps button[aria-current="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
   .steps button:disabled{opacity:.35;cursor:default}
+  .play{appearance:none;align-self:center;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;font-weight:700;font-size:.85rem;padding:9px 16px;border-radius:999px;cursor:pointer}
+  .play[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 
   .cta{appearance:none;width:100%;border:0;border-radius:12px;padding:16px;font:inherit;font-weight:800;font-size:1rem;color:var(--accent-ink);background:linear-gradient(135deg,var(--belt-a),var(--belt-b));cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;box-shadow:var(--shadow)}
   .cta[disabled]{opacity:.5;filter:saturate(.3);cursor:default}
@@ -67,6 +69,7 @@
       alt="3D BJJ technique"
       ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed"
       camera-controls touch-action="pan-y"
+      auto-rotate auto-rotate-delay="1200" rotation-per-second="20deg"
       shadow-intensity="1" exposure="1" environment-image="neutral"
       camera-orbit="35deg 80deg 3.2m" min-camera-orbit="auto 0deg auto" interaction-prompt="auto">
       <button slot="ar-button" class="cta" style="width:auto;padding:12px 18px">View in your space</button>
@@ -74,6 +77,7 @@
   </div>
 
   <div class="steps" id="steps" aria-label="Step"></div>
+  <button class="play" id="play" type="button">▶&nbsp; Play the sequence</button>
 
   <button class="cta" id="arBtn" type="button" disabled>
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z"/><path d="M12 11l8-4.5M12 11v9M12 11L4 6.5"/></svg>
@@ -131,6 +135,20 @@
   arBtn.addEventListener("click",function(){ if(mv.canActivateAR){ try{ mv.activateAR(); }catch(e){} } });
   mv.addEventListener("load", refreshAR);
   mv.addEventListener("ar-status", function(e){ if(e.detail&&e.detail.status==="failed") arNote.textContent="Couldn’t start AR on this device. The 3D model above still works."; });
+
+  // play-through of the available steps
+  var playBtn=document.getElementById("play"), playTimer=null;
+  function stopPlay(){ if(playTimer){ clearInterval(playTimer); playTimer=null; } playBtn.setAttribute("aria-pressed","false"); playBtn.innerHTML="▶&nbsp; Play the sequence"; }
+  function startPlay(){
+    var list=MOVES[move].steps, i=list.indexOf(step); if(i<0) i=0;
+    playBtn.setAttribute("aria-pressed","true"); playBtn.innerHTML="⏸&nbsp; Stop";
+    playTimer=setInterval(function(){ i=(i+1)%list.length; step=list[i]; buildSteps(); apply(); }, 1400);
+  }
+  playBtn.addEventListener("click", function(){ if(playTimer) stopPlay(); else startPlay(); });
+  // stop playback if the user picks a step or move manually
+  stepsEl.addEventListener("click", stopPlay);
+  document.getElementById("m-double-leg").addEventListener("click", stopPlay);
+  document.getElementById("m-hip-throw").addEventListener("click", stopPlay);
 
   setMove("double-leg");
   var tries=0, iv=setInterval(function(){ tries++; if(typeof mv.canActivateAR!=="undefined"||tries>40){ clearInterval(iv); refreshAR(); } },250);
