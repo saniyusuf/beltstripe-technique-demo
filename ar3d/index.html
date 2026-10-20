@@ -86,14 +86,14 @@
   <p class="note" id="arNote">Drag to rotate, pinch to zoom. Tap “View in your space” to place it in the room.</p>
 
   <div class="card">
-    <b>First real-3D build.</b> 8 of your 10 poses reconstructed cleanly (double-leg 1–5; hip throw 1, 3, 5). <b>Hip throw steps 2 and 4 are left out</b> — their source frames weren’t frozen/consistent enough to rebuild, so they need regenerating. Meshes are life-size and look best at normal viewing distance; very close up is soft (limited by the photo resolution).
+    <b>All 10 poses now reconstructed.</b> Rebuilt from higher-resolution source, so every double-leg and hip-throw step is here — including hip throw 2 and 4, which are now clean figures. Meshes are life-size and look best at normal viewing distance; very close up is soft (limited by the source resolution).
   </div>
 </div>
 
 <script>
 (function(){
   var MOVES = { "double-leg":{label:"Double-leg", steps:[1,2,3,4,5]},
-                "hip-throw":{label:"Hip throw", steps:[1,3,5], all:[1,2,3,4,5]} };
+                "hip-throw":{label:"Hip throw", steps:[1,2,3,4,5]} };
   var move="double-leg", step=1;
   var mv=document.getElementById("mv"), tag=document.getElementById("stageTag"),
       stepsEl=document.getElementById("steps"), arBtn=document.getElementById("arBtn"),
