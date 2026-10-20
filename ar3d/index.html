@@ -150,7 +150,7 @@
   document.getElementById("m-double-leg").addEventListener("click", stopPlay);
   document.getElementById("m-hip-throw").addEventListener("click", stopPlay);
 
-  setMove("double-leg");
+  setMove("double-leg"); step=3; buildSteps(); apply();  // open on the cleanest pose
   var tries=0, iv=setInterval(function(){ tries++; if(typeof mv.canActivateAR!=="undefined"||tries>40){ clearInterval(iv); refreshAR(); } },250);
 })();
 </script>
