@@ -35,10 +35,16 @@
   .switch button{appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;padding:10px;border-radius:8px;cursor:pointer}
   .switch button[aria-selected="true"]{background:linear-gradient(135deg,var(--belt-a),var(--belt-b));color:var(--accent-ink);box-shadow:var(--shadow)}
 
-  .stage{position:relative;background:radial-gradient(120% 90% at 50% 0%,var(--surface),var(--surface-2));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);touch-action:none}
+  .stage{position:relative;background:radial-gradient(120% 90% at 50% 0%,var(--surface),var(--surface-2));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);touch-action:none;cursor:grab}
+  .stage.grabbing{cursor:grabbing}
   .stage img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;user-select:none;-webkit-user-drag:none}
   .tag{position:absolute;top:10px;left:10px;background:rgba(12,14,20,.6);backdrop-filter:blur(6px);border:1px solid var(--line);font-size:.75rem;font-weight:700;padding:5px 10px;border-radius:999px}
-  .spinhint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:.74rem;color:var(--muted);background:rgba(12,14,20,.55);padding:4px 10px;border-radius:999px}
+  .spinhint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:.74rem;color:var(--muted);background:rgba(12,14,20,.55);padding:4px 10px;border-radius:999px;transition:opacity .4s;pointer-events:none}
+  .spinhint.hide{opacity:0}
+
+  .stepcap{display:flex;align-items:baseline;justify-content:center;gap:8px;margin:-2px 0 0;min-height:1.2em}
+  .stepcap .n{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .stepcap .name{font-size:1rem;font-weight:800;color:var(--fg)}
 
   .steps{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
   .steps button{appearance:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;font-weight:700;cursor:pointer}
@@ -65,16 +71,18 @@
   #overlay .hint{background:rgba(12,14,20,.6);border-radius:10px;padding:6px 12px;font-size:.78rem;color:var(--muted);pointer-events:none;text-align:center;max-width:320px}
   #exitAR{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-left,0px));pointer-events:auto}
 
-  .loader{position:absolute;inset:0;display:grid;place-items:center;background:rgba(12,14,20,.4);font-size:.85rem;color:var(--fg)}
+  .loader{position:absolute;inset:0;display:grid;place-items:center;background:rgba(12,14,20,.55);font-size:.85rem;color:var(--fg)}
+  .loader .spin{width:30px;height:30px;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:var(--accent);animation:sp .8s linear infinite;margin:0 auto 10px}
+  @keyframes sp{to{transform:rotate(360deg)}}
   [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="wrap" id="page">
   <header>
-    <p class="kicker">BeltStripe · Technique AR test</p>
+    <p class="kicker">BeltStripe · Technique AR</p>
     <h1>Walk around the move in AR</h1>
-    <p class="lead">Place the technique on your mat, then physically walk around it — the view rotates with you. On this page the figure is your 360° photo set, so it reads as a 3D hologram you can circle.</p>
+    <p class="lead">Spin the figure with your finger to see the move from any angle, or launch it in AR and walk around it on your own mat. Each technique is a full 360° capture, so it reads like a 3D hologram you can circle.</p>
   </header>
 
   <div class="switch" role="tablist" aria-label="Choose a move">
@@ -83,11 +91,13 @@
   </div>
 
   <div class="stage" id="stage">
-    <span class="tag" id="stageTag">Double-leg · step 1</span>
+    <span class="tag" id="stageTag">Double-leg</span>
     <img id="frameImg" alt="Technique frame" src="">
-    <span class="spinhint">Drag to spin · 360°</span>
-    <div class="loader" id="loader" hidden>Loading frames…</div>
+    <span class="spinhint" id="spinhint">Drag to spin · 360°</span>
+    <div class="loader" id="loader" hidden><div><div class="spin"></div><span id="loaderTxt">Loading frames…</span></div></div>
   </div>
+
+  <div class="stepcap"><span class="n" id="stepN">Step 1 of 5</span><span class="name" id="stepName">Face off</span></div>
 
   <div class="steps" id="steps" aria-label="Step"></div>
 
@@ -95,10 +105,10 @@
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z"/><path d="M12 11l8-4.5M12 11v9M12 11L4 6.5"/></svg>
     <span id="arLabel">Checking AR…</span>
   </button>
-  <p class="note" id="arNote">Drag the image above to preview the 360° spin.</p>
+  <p class="note" id="arNote">Drag the figure above to spin it a full 360°.</p>
 
   <div class="card">
-    <b>Test build.</b> The move shows as a flat photo panel that swaps angles as you move around it — a fast way to feel the AR placement. The real walk-around <b>3D mesh</b> is the next piece of work, as agreed. Full AR placement needs Android Chrome (your S26); iPhones get the spin preview here.
+    <b>How it works.</b> Each move is a full turntable of your training photos, so spinning it feels like circling a 3D model. Tap <b>Launch AR</b> on an Android Chrome phone (your S26) to pin the technique to the floor and physically walk around it; iPhones get the 360° spin here.
   </div>
 </div>
 
@@ -124,11 +134,13 @@
   "use strict";
   var NUM = 96;                 // frames per 360 spin
   var MOVES = {
-    "double-leg": {label:"Double-leg", steps:5},
-    "hip-throw":  {label:"Hip throw",  steps:5}
+    "double-leg": {label:"Double-leg", names:["Face off","Level change","Shoot in","Drive & lift","Finish on top"]},
+    "hip-throw":  {label:"Hip throw",  names:["Clinch up","Break balance","Step in","Load on the hip","Throw to the mat"]}
   };
   var move = "double-leg", step = 1, idx = 0;
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  function stepCount(mv){ return MOVES[mv].names.length; }
   function pad(n){ return (n<10?"0":"")+n; }
   function frameURL(mv, st, i){ return "../frames/"+mv+"-"+st+"/"+pad(i)+".jpg"; }
 
@@ -138,6 +150,10 @@
   var stage = document.getElementById("stage");
   var stepsEl = document.getElementById("steps");
   var loader = document.getElementById("loader");
+  var loaderTxt = document.getElementById("loaderTxt");
+  var spinhint = document.getElementById("spinhint");
+  var stepNEl = document.getElementById("stepN");
+  var stepNameEl = document.getElementById("stepName");
 
   var cache = {}; // "mv-st" -> array of Image
   function key(mv,st){ return mv+"-"+st; }
@@ -145,41 +161,57 @@
   function preload(mv, st, done){
     var k = key(mv,st);
     if(cache[k]){ if(done) done(); return; }
-    loader.hidden = false;
-    var arr = new Array(NUM), left = NUM, failed = false;
+    loader.hidden = false; loaderTxt.textContent = "Loading frames… 0%";
+    var arr = new Array(NUM), left = NUM, got = 0;
     for(var i=0;i<NUM;i++){
       (function(i){
         var im = new Image();
-        im.onload = function(){ if(--left===0){ cache[k]=arr; loader.hidden=true; if(done) done(); } };
-        im.onerror = function(){ failed=true; if(--left===0){ cache[k]=arr; loader.hidden=true; if(done) done(); } };
+        function fin(){ got++; loaderTxt.textContent = "Loading frames… "+Math.round(got/NUM*100)+"%";
+          if(--left===0){ cache[k]=arr; loader.hidden=true; if(done) done(); } }
+        im.onload = fin; im.onerror = fin;
         im.src = frameURL(mv,st,i);
         arr[i]=im;
       })(i);
     }
   }
+  // quietly warm a step's frames in the background (no loader)
+  function prefetch(mv, st){
+    var k = key(mv,st); if(cache[k]) return;
+    var arr = new Array(NUM), left = NUM;
+    for(var i=0;i<NUM;i++){
+      (function(i){ var im=new Image(); im.onload=im.onerror=function(){ if(--left===0) cache[k]=arr; }; im.src=frameURL(mv,st,i); arr[i]=im; })(i);
+    }
+  }
 
   function showFrame(i){
-    idx = ((i%NUM)+NUM)%NUM;
+    idx = ((Math.round(i)%NUM)+NUM)%NUM;
     img.src = frameURL(move, step, idx);
-    stageTag.textContent = MOVES[move].label + " · step " + step;
+  }
+  function setCaption(){
+    var names = MOVES[move].names;
+    stageTag.textContent = MOVES[move].label;
+    stepNEl.textContent = "Step "+step+" of "+names.length;
+    stepNameEl.textContent = names[step-1];
   }
 
   function buildSteps(){
     stepsEl.innerHTML = "";
-    for(var s=1;s<=MOVES[move].steps;s++){
+    var n = stepCount(move);
+    for(var s=1;s<=n;s++){
       (function(s){
         var b=document.createElement("button");
         b.textContent=s; b.setAttribute("aria-current", s===step?"true":"false");
+        b.setAttribute("aria-label", "Step "+s+": "+MOVES[move].names[s-1]);
         b.addEventListener("click",function(){ setStep(s); });
         stepsEl.appendChild(b);
       })(s);
     }
-    // AR step row mirrors this
+    // AR step row mirrors this (short names)
     var arSteps=document.getElementById("arSteps"); arSteps.innerHTML="";
-    for(var s2=1;s2<=MOVES[move].steps;s2++){
+    for(var s2=1;s2<=n;s2++){
       (function(s2){
         var b=document.createElement("button");
-        b.textContent="Step "+s2; if(s2===step) b.className="primary";
+        b.textContent=s2+". "+MOVES[move].names[s2-1]; if(s2===step) b.className="primary";
         b.addEventListener("click",function(){ setStep(s2); if(AR.placed) AR.loadStepTextures(); });
         arSteps.appendChild(b);
       })(s2);
@@ -187,35 +219,83 @@
   }
 
   function setStep(s){
-    step=s; buildSteps();
-    preload(move, step, function(){ showFrame(idx); });
+    step=s; buildSteps(); setCaption();
+    preload(move, step, function(){ showFrame(pos); nudgeIdle(); });
   }
   function setMove(mv){
     move=mv; step=1;
     document.getElementById("m-double-leg").setAttribute("aria-selected", mv==="double-leg"?"true":"false");
     document.getElementById("m-hip-throw").setAttribute("aria-selected", mv==="hip-throw"?"true":"false");
-    buildSteps();
-    preload(move, step, function(){ showFrame(0); });
+    buildSteps(); setCaption();
+    pos=0;
+    preload(move, step, function(){ showFrame(0); nudgeIdle(); prefetch(move, Math.min(2,stepCount(move))); });
   }
 
   document.getElementById("m-double-leg").addEventListener("click",function(){ setMove("double-leg"); });
   document.getElementById("m-hip-throw").addEventListener("click",function(){ setMove("hip-throw"); });
 
-  // drag to spin
-  var dragging=false, lastX=0;
-  function onDown(x){ dragging=true; lastX=x; }
+  // ---------- spin engine: drag + momentum + idle auto-rotate ----------
+  var pos = 0;              // fractional current frame
+  var vel = 0;              // frames per tick, for momentum
+  var dragging = false, lastX = 0, lastT = 0, moved = false;
+  var lastInteract = 0;     // ms of last user input
+  var idlePhase = 0;
+  var IDLE_DELAY = 3500;    // ms of stillness before auto-rotate kicks in
+  var IDLE_AMP = 8;         // frames each side of front (~30°, stays in the sharp arc)
+  var PX_PER_FRAME = 5;     // drag sensitivity
+  var started = false;
+
+  function nudgeIdle(){ lastInteract = performance.now(); }
+
+  function onDown(x){ dragging=true; moved=false; lastX=x; lastT=performance.now(); vel=0; nudgeIdle();
+    stage.classList.add("grabbing"); }
   function onMove(x){
     if(!dragging) return;
-    var dx=x-lastX;
-    if(Math.abs(dx)>=6){ var steps=Math.round(dx/6); showFrame(idx - steps); lastX=x; }
+    var now=performance.now(), dx=x-lastX;
+    if(Math.abs(dx)>=1){
+      if(Math.abs(dx)>3) { moved=true; spinhint.classList.add("hide"); }
+      var df = dx/PX_PER_FRAME;
+      pos -= df;
+      var dt = Math.max(16, now-lastT);
+      vel = -df * (16/dt);          // frames per ~16ms tick
+      lastX=x; lastT=now; nudgeIdle();
+      showFrame(pos);
+    }
   }
-  function onUp(){ dragging=false; }
+  function onUp(){ if(!dragging) return; dragging=false; stage.classList.remove("grabbing");
+    vel = Math.max(-3, Math.min(3, vel)); nudgeIdle(); }
+
   stage.addEventListener("mousedown",function(e){ onDown(e.clientX); });
   window.addEventListener("mousemove",function(e){ onMove(e.clientX); });
   window.addEventListener("mouseup",onUp);
   stage.addEventListener("touchstart",function(e){ onDown(e.touches[0].clientX); },{passive:true});
   stage.addEventListener("touchmove",function(e){ onMove(e.touches[0].clientX); },{passive:true});
   stage.addEventListener("touchend",onUp);
+  stage.addEventListener("touchcancel",onUp);
+
+  function wrappedFront(p){ // nearest equivalent of pos to the 0 (front) centre, in [-48,48]
+    var m=((p%NUM)+NUM)%NUM; if(m>NUM/2) m-=NUM; return m;
+  }
+
+  function tick(now){
+    if(!dragging){
+      if(Math.abs(vel) > 0.02){
+        pos += vel; vel *= 0.94;        // momentum glide
+        showFrame(pos); nudgeIdleSilently(now);
+      } else if(!reduceMotion && now - lastInteract > IDLE_DELAY){
+        // gentle pendulum within the sharp front arc, easing home from wherever we stopped
+        idlePhase += 0.018;
+        var target = IDLE_AMP * Math.sin(idlePhase);
+        var cur = wrappedFront(pos);
+        var next = cur + (target - cur) * 0.06;
+        pos = next;
+        showFrame(pos);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  // keep momentum from being mistaken for "user is active" (so idle can resume after glide)
+  function nudgeIdleSilently(now){ /* intentionally does not reset lastInteract */ }
 
   // ---------- WebXR AR ----------
   var AR = {
@@ -277,7 +357,7 @@
 
   AR.loadStepTextures=function(){
     if(AR.loadingTex) return;
-    AR.loadingTex=true; arTop.textContent="Loading "+MOVES[move].label+" step "+step+"…"; arTop.style.display="block";
+    AR.loadingTex=true; arTop.textContent="Loading "+MOVES[move].label+" · "+MOVES[move].names[step-1]+"…"; arTop.style.display="block";
     var loaderT=new THREE.TextureLoader();
     var arr=new Array(NUM), left=NUM;
     // dispose old
@@ -306,14 +386,14 @@
 
   function onSelect(){
     if(!AR.reticle.visible) return;
-    var pos=new THREE.Vector3(), q=new THREE.Quaternion(), s=new THREE.Vector3();
-    AR.reticle.matrix.decompose(pos,q,s);
-    AR.anchor.position.copy(pos);
+    var pos3=new THREE.Vector3(), q=new THREE.Quaternion(), s=new THREE.Vector3();
+    AR.reticle.matrix.decompose(pos3,q,s);
+    AR.anchor.position.copy(pos3);
     AR.plane.visible=true; AR.placed=true;
     sizePlane();
     // base angle so the current viewpoint shows frame 0
     var camPos=new THREE.Vector3(); AR.renderer.xr.getCamera().getWorldPosition(camPos);
-    AR.baseAngle=Math.atan2(camPos.x-pos.x, camPos.z-pos.z);
+    AR.baseAngle=Math.atan2(camPos.x-pos3.x, camPos.z-pos3.z);
     AR.reticle.visible=false;
     arTop.textContent="Walk around it";
     document.getElementById("arHint").textContent="Walk around the move — the angle follows you.";
@@ -399,6 +479,7 @@
   // boot
   setMove("double-leg");
   checkSupport();
+  requestAnimationFrame(tick);
 })();
 </script>
 </body>
