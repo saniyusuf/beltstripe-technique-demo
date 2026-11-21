@@ -13,8 +13,9 @@
     new V.Viewer(el, {
       id: info.step.id, marks: info.step.marks, study: true,
       label: info.move.title + ", step " + (info.index + 1) + ", " + info.step.name + ". Drag or use arrow keys to turn.",
+      idle: false,
       onStudy: function (v) { openStudy(info.move, info.index, v); }
-    });
+    }).setFull(true);
   });
   V.probe(DATA[0].steps[0].id);
 
@@ -29,6 +30,7 @@
 
   // ---------- study mode ----------
   var study = document.getElementById("study");
+  if (!study) return; // simple page: drag-to-spin only
   var sv = null, cur = { move: null, index: 0 }, playing = false, playTimer = null, returnFocus = null;
   var el = function (id) { return document.getElementById(id); };
   var HOLD = 2600;

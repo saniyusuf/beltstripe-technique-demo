@@ -47,3 +47,4 @@
 }
 @media (prefers-reduced-motion: reduce) { .bsv-load, .bsv-load span, .bsv-hint { transition: none; } }
 .no-cutouts .bsv-bg[data-bg="stage"] { opacity: .38; pointer-events: none; }
+.simple .bsv-bar, .simple .bsv-hud-top, .simple .bsv-compass, .simple .bsv-corners { display: none; }

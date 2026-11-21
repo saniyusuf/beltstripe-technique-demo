@@ -25,7 +25,7 @@ def step_card(move, i, step):
     <h3>{e(step['name'])}</h3>
     <p class="do">{e(step['do'])}</p>
     <ol class="marks">{marks}</ol>
-    <p class="marks-note">Numbers follow the body as you turn when Coach view data is available.</p>
+    <p class="marks-note">Numbers show on the starting view.</p>
   </div>
 </section>"""
 
@@ -40,7 +40,6 @@ def move_section(move):
 <section class="move" id="{move['id']}">
   <div class="move-head">
     <div><div class="eyebrow">{e(move['eyebrow'])}</div><h2>{e(move['title'])}</h2><p>{e(move['lede'])}</p></div>
-    <button type="button" class="play-move" data-play="{move['id']}"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg>Play the move</button>
   </div>
   <nav class="strip" aria-label="{e(move['title'])} steps">{thumbs}</nav>
   {cards}
@@ -63,12 +62,12 @@ page = f"""<!doctype html>
 <link rel="stylesheet" href="assets/page.css">
 <link rel="preload" as="image" href="frames-webp/{moves[0]['steps'][0]['id']}/00.webp">
 </head>
-<body>
+<body class="simple">
 <div class="wrap">
   <header class="hero">
     <div class="eyebrow">Beltstripe · Technique library</div>
     <h1>See every move from every side</h1>
-    <p class="lede">Each step of the move, captured all the way round. Drag to turn, switch on Coach view to see the joints and angles, or put the fighters on the stage to study the shape without the gym.</p>
+    <p class="lede">Two moves, broken into steps. Drag any photo to walk all the way round the position and see exactly where the hands, hips and feet go.</p>
     <dl class="facts">
       <div><dt>Moves</dt><dd>{len(moves)}</dd></div>
       <div><dt>Positions</dt><dd>{n_steps}</dd></div>
@@ -99,31 +98,7 @@ page = f"""<!doctype html>
     </div>
     <p><a class="ar-link" href="ar/">Place a move on your own mat in AR →</a></p>
   </section>
-  <p class="foot">All photos on this page are generated from photos of Sani. The training partner is not a real person. The sharp arc on the compass marks the angles closest to the original photos. Angles outside it are marked Beta.</p>
-</div>
-
-<div class="study" id="study" hidden role="dialog" aria-modal="true" aria-labelledby="studyTitle">
-  <div class="study-top">
-    <div><div class="eyebrow" id="studyMove"></div><h2 id="studyTitle"></h2></div>
-    <div class="study-actions">
-      <button type="button" class="s-btn" id="studyTilt" aria-pressed="false">Tilt to turn</button>
-      <button type="button" class="s-btn" id="studyClose" aria-label="Close study mode">Close <kbd>Esc</kbd></button>
-    </div>
-  </div>
-  <div class="study-body">
-    <div class="study-view"><div id="studyView"></div></div>
-    <aside class="study-notes">
-      <p id="studyDo"></p>
-      <ol class="marks" id="studyMarks"></ol>
-      <p class="keys"><kbd>←</kbd><kbd>→</kbd> turn · <kbd>↑</kbd><kbd>↓</kbd> or <kbd>1</kbd>–<kbd>5</kbd> step · <kbd>Space</kbd> play</p>
-    </aside>
-  </div>
-  <div class="study-timeline">
-    <button type="button" class="s-btn" id="studyPrev" aria-label="Previous step">‹</button>
-    <button type="button" class="s-btn s-play" id="studyPlay" aria-pressed="false"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg><span>Play the move</span></button>
-    <div class="tl" id="studySteps"></div>
-    <button type="button" class="s-btn" id="studyNext" aria-label="Next step">›</button>
-  </div>
+  <p class="foot">All photos on this page are generated from photos of Sani. The training partner is not a real person.</p>
 </div>
 
 <script>window.TECHNIQUES = {data_js};</script>
