@@ -142,7 +142,11 @@
 
   function stepCount(mv){ return MOVES[mv].names.length; }
   function pad(n){ return (n<10?"0":"")+n; }
-  function frameURL(mv, st, i){ return "../frames/"+mv+"-"+st+"/"+pad(i)+".jpg"; }
+  function frameURL(mv, st, i){ return "../frames-webp/"+mv+"-"+st+"/"+pad(i)+".webp"; }
+  // In AR the fighters are placed without the gym when cut-outs are published
+  var HAS_CUTOUTS = false;
+  (function(){ var t=new Image(); t.onload=function(){ HAS_CUTOUTS=true; }; t.src="../cutouts/double-leg-1/00.webp"; })();
+  function arTexURL(mv, st, i){ return HAS_CUTOUTS ? "../cutouts/"+mv+"-"+st+"/"+pad(i)+".webp" : frameURL(mv, st, i); }
 
   // ---------- inline 360 preview ----------
   var img = document.getElementById("frameImg");
@@ -346,12 +350,20 @@
     AR.reticle.matrixAutoUpdate=false; AR.reticle.visible=false;
     AR.scene.add(AR.reticle);
 
-    AR.mat=new THREE.MeshBasicMaterial({transparent:false, side:THREE.DoubleSide, toneMapped:false});
+    AR.mat=new THREE.MeshBasicMaterial({transparent:HAS_CUTOUTS, alphaTest:HAS_CUTOUTS?0.08:0, depthWrite:!HAS_CUTOUTS, side:THREE.DoubleSide, toneMapped:false});
     var geo=new THREE.PlaneGeometry(1,1);
     AR.plane=new THREE.Mesh(geo, AR.mat);
     AR.plane.visible=false;
     AR.anchor=new THREE.Group();
     AR.anchor.add(AR.plane);
+    if(HAS_CUTOUTS){
+      // soft contact shadow under the fighters so they sit on the mat
+      var sc=document.createElement("canvas"); sc.width=sc.height=128; var sx=sc.getContext("2d");
+      var sg=sx.createRadialGradient(64,64,0,64,64,64); sg.addColorStop(0,"rgba(0,0,0,0.55)"); sg.addColorStop(1,"rgba(0,0,0,0)");
+      sx.fillStyle=sg; sx.fillRect(0,0,128,128);
+      AR.shadow=new THREE.Mesh(new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2), new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sc), transparent:true, depthWrite:false}));
+      AR.shadow.position.y=0.002; AR.shadow.visible=false; AR.anchor.add(AR.shadow);
+    }
     AR.scene.add(AR.anchor);
   }
 
@@ -364,7 +376,7 @@
     for(var j=0;j<AR.tex.length;j++){ if(AR.tex[j]&&AR.tex[j].dispose) AR.tex[j].dispose(); }
     for(var i=0;i<NUM;i++){
       (function(i){
-        loaderT.load(frameURL(move,step,i), function(t){
+        loaderT.load(arTexURL(move,step,i), function(t){
           t.colorSpace=THREE.SRGBColorSpace; arr[i]=t;
           if(--left===0){ AR.tex=arr; AR.lastIdx=-1; AR.loadingTex=false; arTop.textContent="Walk around it"; applyFrame(0); }
         }, undefined, function(){ if(--left===0){ AR.tex=arr; AR.loadingTex=false; } });
@@ -382,6 +394,7 @@
     var h=AR.size/1.5; // image is 3:2 landscape; width=size, height=size/1.5
     AR.plane.scale.set(AR.size, h, 1);
     AR.plane.position.y=h/2; // sit bottom on floor
+    if(AR.shadow){ AR.shadow.scale.set(AR.size*0.75, AR.size*0.3, 1); AR.shadow.position.z=0; }
   }
 
   function onSelect(){
@@ -389,7 +402,7 @@
     var pos3=new THREE.Vector3(), q=new THREE.Quaternion(), s=new THREE.Vector3();
     AR.reticle.matrix.decompose(pos3,q,s);
     AR.anchor.position.copy(pos3);
-    AR.plane.visible=true; AR.placed=true;
+    AR.plane.visible=true; AR.placed=true; if(AR.shadow) AR.shadow.visible=true;
     sizePlane();
     // base angle so the current viewpoint shows frame 0
     var camPos=new THREE.Vector3(); AR.renderer.xr.getCamera().getWorldPosition(camPos);
@@ -406,6 +419,7 @@
     var dx=camPos.x-AR.anchor.position.x, dz=camPos.z-AR.anchor.position.z;
     var ang=Math.atan2(dx,dz);
     AR.plane.rotation.y=ang; // face the viewer
+    if(AR.shadow) AR.shadow.rotation.y=ang;
     var rel=ang-AR.baseAngle;
     var fi=Math.round((rel/(2*Math.PI))*NUM);
     if(AR.dir<0) fi=-fi;
@@ -464,7 +478,7 @@
 
   enterBtn.addEventListener("click", function(){ if(AR.supported) startAR(); });
   document.getElementById("exitAR").addEventListener("click", function(){ if(AR.session) AR.session.end(); });
-  document.getElementById("arReplace").addEventListener("click", function(){ AR.placed=false; AR.plane.visible=false; arTop.textContent="Point at the floor, then tap to place"; });
+  document.getElementById("arReplace").addEventListener("click", function(){ AR.placed=false; AR.plane.visible=false; if(AR.shadow) AR.shadow.visible=false; arTop.textContent="Point at the floor, then tap to place"; });
   document.getElementById("arFlip").addEventListener("click", function(){ AR.dir*=-1; AR.lastIdx=-1; });
   document.getElementById("arBigger").addEventListener("click", function(){ AR.size=Math.min(4,AR.size+0.3); if(AR.placed) sizePlane(); });
   document.getElementById("arSmaller").addEventListener("click", function(){ AR.size=Math.max(0.6,AR.size-0.3); if(AR.placed) sizePlane(); });
