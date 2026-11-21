@@ -1,0 +1,258 @@
+[
+ {
+  "id": "double-leg",
+  "eyebrow": "Standing takedown",
+  "title": "Double Leg",
+  "lede": "Sani changes levels, shoots in on both legs and drives Tom to his back.",
+  "steps": [
+   {
+    "id": "double-leg-1",
+    "name": "Stance",
+    "do": "Both start in a grappling stance about an arm's length apart, knees bent, hands up.",
+    "marks": [
+     {
+      "x": 590,
+      "y": 330,
+      "text": "Hands up in front of the chest, ready to hand-fight."
+     },
+     {
+      "x": 360,
+      "y": 850,
+      "text": "Staggered stance, knees bent, weight on the balls of the feet."
+     },
+     {
+      "x": 710,
+      "y": 420,
+      "text": "About an arm's length apart. Close enough to shoot."
+     }
+    ]
+   },
+   {
+    "id": "double-leg-2",
+    "name": "Level change",
+    "do": "Sani drops his hips by bending his knees, keeps his back straight and his head up. Tom is still standing tall.",
+    "marks": [
+     {
+      "x": 330,
+      "y": 690,
+      "text": "Bend the knees, not the waist."
+     },
+     {
+      "x": 500,
+      "y": 400,
+      "text": "Head up, eyes on his hips."
+     },
+     {
+      "x": 420,
+      "y": 450,
+      "text": "Back straight, so you can drive forward."
+     }
+    ]
+   },
+   {
+    "id": "double-leg-3",
+    "name": "Penetration step",
+    "do": "Sani steps deep between Tom's feet, drops his back knee to the mat, puts his head tight to Tom's side and wraps behind both knees.",
+    "marks": [
+     {
+      "x": 780,
+      "y": 800,
+      "text": "Front foot steps deep between his feet."
+     },
+     {
+      "x": 290,
+      "y": 820,
+      "text": "Back knee drops to the mat."
+     },
+     {
+      "x": 790,
+      "y": 470,
+      "text": "Head tight to his side, not in front of his chest."
+     },
+     {
+      "x": 930,
+      "y": 540,
+      "text": "Hands cup behind his knees."
+     }
+    ]
+   },
+   {
+    "id": "double-leg-4",
+    "name": "Drive through",
+    "do": "Sani steps his back foot up and drives forward, pulling Tom's knees tight to his chest. Tom's feet come off the mat.",
+    "marks": [
+     {
+      "x": 230,
+      "y": 830,
+      "text": "Drive off the back foot."
+     },
+     {
+      "x": 790,
+      "y": 490,
+      "text": "Pull his knees tight to your chest."
+     },
+     {
+      "x": 960,
+      "y": 330,
+      "text": "Head stays tight on his side as you drive."
+     },
+     {
+      "x": 640,
+      "y": 740,
+      "text": "His feet start to leave the mat."
+     }
+    ]
+   },
+   {
+    "id": "double-leg-5",
+    "name": "Finish on top",
+    "do": "Tom lands on his back. Sani lands on his knees with his weight forward, controlling Tom's legs and hips, ready to pass.",
+    "marks": [
+     {
+      "x": 880,
+      "y": 510,
+      "text": "Keep hold of his legs so he can't recover guard."
+     },
+     {
+      "x": 440,
+      "y": 750,
+      "text": "Knees on the mat, weight forward on his hips."
+     },
+     {
+      "x": 1000,
+      "y": 730,
+      "text": "He lands flat on his back."
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hip-throw",
+  "eyebrow": "Clinch throw",
+  "title": "Clinch to Hip Throw",
+  "lede": "From a Gracie-style side clinch, Sani turns in, loads Tom onto his hip and throws him over, keeping the sleeve as Tom lands.",
+  "steps": [
+   {
+    "id": "hip-throw-1",
+    "name": "Gracie clinch",
+    "do": "Sani gets to Tom's side, drives his head into the side of Tom's neck, wraps one arm around Tom's lower back to control his far hip, and clamps Tom's near arm at the biceps. Rotate to the back to see the hip control.",
+    "marks": [
+     {
+      "x": 800,
+      "y": 290,
+      "text": "Head driven into the side of his neck, chin tucked."
+     },
+     {
+      "x": 758,
+      "y": 373,
+      "text": "Clamp his near arm at the biceps."
+     },
+     {
+      "x": 714,
+      "y": 470,
+      "text": "Hip tight to his hip. Far arm round his back controls his far hip."
+     },
+     {
+      "x": 608,
+      "y": 664,
+      "text": "Knees bent, stay low and heavy."
+     }
+    ]
+   },
+   {
+    "id": "hip-throw-2",
+    "name": "Step in and turn",
+    "do": "Sani steps across in front of Tom's feet and turns in, dropping his hips below Tom's while keeping the arm tight.",
+    "marks": [
+     {
+      "x": 650,
+      "y": 560,
+      "text": "Drop your hips below his."
+     },
+     {
+      "x": 770,
+      "y": 880,
+      "text": "Step across in front of his feet."
+     },
+     {
+      "x": 700,
+      "y": 390,
+      "text": "Keep his arm trapped tight."
+     }
+    ]
+   },
+   {
+    "id": "hip-throw-3",
+    "name": "Load the hip",
+    "do": "Sani's hips go across Tom's, his back into Tom's chest, pulling Tom's arm across. Tom's weight comes forward onto Sani's hip.",
+    "marks": [
+     {
+      "x": 700,
+      "y": 560,
+      "text": "Hips across and below his."
+     },
+     {
+      "x": 640,
+      "y": 360,
+      "text": "Pull his arm across your chest."
+     },
+     {
+      "x": 960,
+      "y": 850,
+      "text": "His heel lifts as his weight comes onto you."
+     }
+    ]
+   },
+   {
+    "id": "hip-throw-4",
+    "name": "Throw",
+    "do": "Sani straightens his legs, bows forward and turns, lifting Tom over his hip. Tom's legs swing over the top.",
+    "marks": [
+     {
+      "x": 640,
+      "y": 470,
+      "text": "Lift with your legs and turn, not with your back."
+     },
+     {
+      "x": 560,
+      "y": 420,
+      "text": "Keep pulling the sleeve."
+     },
+     {
+      "x": 610,
+      "y": 850,
+      "text": "Feet stay planted."
+     },
+     {
+      "x": 1150,
+      "y": 290,
+      "text": "His legs swing over the top."
+     }
+    ]
+   },
+   {
+    "id": "hip-throw-5",
+    "name": "Land and control",
+    "do": "Tom lands flat on his back. Sani stays standing over him, still holding the sleeve with Tom's arm stretched up.",
+    "marks": [
+     {
+      "x": 630,
+      "y": 450,
+      "text": "Keep the sleeve after he lands."
+     },
+     {
+      "x": 870,
+      "y": 600,
+      "text": "Stay over him, ready to drop a knee."
+     },
+     {
+      "x": 800,
+      "y": 780,
+      "text": "He lands flat on his back."
+     }
+    ]
+   }
+  ]
+ }
+]
