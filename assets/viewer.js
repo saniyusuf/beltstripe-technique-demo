@@ -92,7 +92,7 @@
   var BONES = [["nose", "neck"], ["neck", "lsh"], ["neck", "rsh"], ["lsh", "lel"], ["lel", "lwr"], ["rsh", "rel"], ["rel", "rwr"],
     ["lsh", "lhip"], ["rsh", "rhip"], ["lhip", "rhip"], ["lhip", "lkn"], ["lkn", "lan"], ["rhip", "rkn"], ["rkn", "ran"]];
   var ANGLES = [["lhip", "lkn", "lan", "Knee"], ["rhip", "rkn", "ran", "Knee"], ["lsh", "lhip", "lkn", "Hip"], ["rsh", "rhip", "rkn", "Hip"]];
-  var MIN_CONF = 0.3;
+  var MIN_CONF = 0.25;
 
   function normPerson(p) {
     var src = p.joints || p, out = {};
@@ -146,7 +146,13 @@
   function loadPose(id, cb) {
     if (poseCache[id] !== undefined) { if (poseCache[id] && poseCache[id].then) poseCache[id].then(cb); else cb(poseCache[id]); return; }
     poseCache[id] = fetch("pose/" + id + ".json").then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) { var w = d.w || 1152, h = d.h || 768; var t = { w: w, h: h, frames: track(d.frames || []) }; poseCache[id] = t; return t; })
+      .then(function (d) {
+        var w = d.w || 1152, h = d.h || 768, frames;
+        if (d.tracked) {
+          // already cleaned and tracked offline by tools/clean_pose.py
+          frames = (d.frames || []).map(function (f) { return f.map(function (p) { var r = { id: p.id, j: normPerson(p) }; r.c = centroid(r.j); return r; }); });
+        } else frames = track(d.frames || []);
+        var t = { w: w, h: h, frames: frames }; poseCache[id] = t; return t; })
       .catch(function () { poseCache[id] = null; return null; });
     poseCache[id].then(cb);
   }
@@ -520,6 +526,7 @@
     ctx.shadowBlur = 0;
     ctx.font = "600 " + Math.round(11 * DPR) + "px 'JetBrains Mono', ui-monospace, monospace";
     ctx.textBaseline = "middle";
+    var placed = [];
     people.forEach(function (p) {
       var j = p.j;
       // one knee and one hip label per side would collide on a side view; keep the most confident of each kind
@@ -528,7 +535,7 @@
         var a = j[A[0]], b = j[A[1]], c = j[A[2]];
         if (!(a && b && c)) return;
         var conf = Math.min(a[2], b[2], c[2]);
-        if (conf < 0.45) return;
+        if (conf < 0.3) return;
         if (A[3] === "Hip") { if (!pick.hip || conf > pick.hip.conf) pick.hip = { A: A, conf: conf }; }
         else (pick.knees = pick.knees || []).push({ A: A, conf: conf });
       });
@@ -539,7 +546,13 @@
         var cos = (v1x * v2x + v1y * v2y) / (Math.hypot(v1x, v1y) * Math.hypot(v2x, v2y) || 1);
         var deg = Math.round(Math.acos(clamp(cos, -1, 1)) * 180 / Math.PI);
         var t = A[3].toUpperCase() + " " + deg + "°", x = b[0] * sx + 10 * DPR, y = b[1] * sy - 10 * DPR;
-        var tw = ctx.measureText(t).width;
+        var tw = ctx.measureText(t).width, bh = 18 * DPR;
+        // nudge the label down until it clears the ones already drawn
+        for (var tries = 0; tries < 6; tries++) {
+          var hit = placed.some(function (r) { return x - 5 * DPR < r[2] && x + tw + 5 * DPR > r[0] && y - 9 * DPR < r[3] && y + 9 * DPR > r[1]; });
+          if (!hit) break; y += bh + 2 * DPR;
+        }
+        placed.push([x - 5 * DPR, y - 9 * DPR, x + tw + 5 * DPR, y + 9 * DPR]);
         ctx.fillStyle = "rgba(7,11,20,0.78)"; ctx.fillRect(x - 5 * DPR, y - 9 * DPR, tw + 10 * DPR, 18 * DPR);
         ctx.fillStyle = "#E8F6FF"; ctx.fillText(t, x, y);
       });
